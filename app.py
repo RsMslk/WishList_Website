@@ -8,7 +8,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wishlist.db'
 db = SQLAlchemy(app)
 
-# Модель для базы данных
+# Модель для базы данных 
+# Тестовое изменение
 class WishlistItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
