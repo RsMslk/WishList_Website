@@ -2,7 +2,8 @@ import pandas as pd
 from app import app, db, WishlistItem  # Убедитесь, что импортируете нужные модули
 
 # Чтение данных из CSV
-df = pd.read_csv('wishlist.csv')
+df = pd.read_csv('wishlist_utf8.csv')
+print(df.columns)
 
 # Удаление дубликатов из базы данных
 with app.app_context():
