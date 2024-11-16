@@ -49,7 +49,7 @@ def mark_purchased(item_id):
 # Маршрут для конвертации CSV файла
 @app.route('/convert_csv')
 def convert_csv():
-    input_file = 'wishlist.csv'  # Укажи путь к исходному файлу
+    input_file = 'wishlist_utf8.csv'  # Укажи путь к исходному файлу
     output_file = 'wishlist_utf8.csv'  # Укажи путь к выходному файлу
 
     # Вызываем функцию для конвертации
@@ -58,7 +58,7 @@ def convert_csv():
     return "Конвертация завершена!"
 
 if __name__ == '__main__':
-    input_file = 'wishlist.csv'  # Укажи путь к исходному файлу
+    input_file = 'wishlist_utf8.csv'  # Укажи путь к исходному файлу
     output_file = 'wishlist_utf8.csv'  # Укажи путь к выходному файлу
 
     # Конвертируем CSV перед запуском сервера, если это нужно
