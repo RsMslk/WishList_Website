@@ -1,4 +1,7 @@
-id,title,url,purchased
-1,РќРѕРІС‹Р№ С‚РµР»РµС„РѕРЅ,https://example.com/phone,0
-2,РќРѕСѓС‚Р±СѓРє,https://example.com/laptop,0
-3,Р§Р°СЃС‹,https://example.com/watch,0
+id,title,url,who,purchased
+1,Phone,https://example.com/phone,Margo,0
+2,Laptop,https://example.com/laptop,Ruslan,0
+3,Watch,https://example.com/watch,Margo,1
+4, sfhdjfhj, https://example.com/dhgjfhgj,Ruslan,1
+5, falser, https://example.com/falser, Ruslan,1
+6, truer, https://example.com/truer, Ruslan,0

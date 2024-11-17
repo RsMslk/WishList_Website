@@ -1,67 +1,35 @@
-from flask import Flask, render_template, redirect
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, redirect, request, jsonify
 import pandas as pd
 import chardet
 import os
 
+from item import Item
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///wishlist.db'
-db = SQLAlchemy(app)
-
-# Модель для базы данных 
-# Тестовое изменение
-class WishlistItem(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(80), nullable=False)
-    url = db.Column(db.String(200), nullable=False)
-    purchased = db.Column(db.Boolean, default=False)
-
-# Функция для конвертации кодировки CSV файла
-def convert_csv_encoding(input_file, output_file):
-    # Определяем кодировку исходного файла
-    with open(input_file, 'rb') as f:
-        result = chardet.detect(f.read())
-        file_encoding = result['encoding']
-        print(f"Определённая кодировка: {file_encoding}")
-    
-    try:
-        # Используем определённую кодировку для чтения
-        df = pd.read_csv(input_file, encoding=file_encoding)
-        df.to_csv(output_file, encoding='utf-8', index=False)
-        print(f"Файл {input_file} успешно перекодирован и сохранён как {output_file}")
-    except Exception as e:
-        print(f"Ошибка при конвертации файла: {e}")
 
 # Маршрут для главной страницы
 @app.route('/')
-def index():
-    wishlist = WishlistItem.query.all()
-    return render_template('index.html', wishlist=wishlist)
+def index():  # Читаем CSV
+    df = pd.read_csv("wishlist_utf8.csv")
+    df = df.reset_index()
+    # Запихиваем всю дату в список итемов
+    all_items = []
+    for _, row in df.iterrows():
+        all_items.append(Item(row['id'], row['title'],
+                         row['url'], row['who'], row['purchased']))
 
-# Маршрут для отметки подарка как купленного
-@app.route('/mark_purchased/<int:item_id>')
-def mark_purchased(item_id):
-    item = WishlistItem.query.get_or_404(item_id)
-    item.purchased = True
-    db.session.commit()
-    return redirect('/')
+    return render_template('index.html', wishlist=all_items)
 
-# Маршрут для конвертации CSV файла
-@app.route('/convert_csv')
-def convert_csv():
-    input_file = 'wishlist_utf8.csv'  # Укажи путь к исходному файлу
-    output_file = 'wishlist_utf8.csv'  # Укажи путь к выходному файлу
 
-    # Вызываем функцию для конвертации
-    convert_csv_encoding(input_file, output_file)
-    
-    return "Конвертация завершена!"
+@app.route('/mark_as_gifted/<int:item_id>', methods=['POST'])
+def mark_as_gifted(item_id):
+    # Здесь логика для отметки предмета как подаренного
+    df = (pd.read_csv("wishlist_utf8.csv"))
+    df.loc[df['id'] == item_id, 'purchased'] = 1
+    df.to_csv("wishlist_utf8.csv", index=False)
+    # Пример ответа (обновите логику по мере необходимости)
+
+    return jsonify({'success': True})
+
 
 if __name__ == '__main__':
-    input_file = 'wishlist_utf8.csv'  # Укажи путь к исходному файлу
-    output_file = 'wishlist_utf8.csv'  # Укажи путь к выходному файлу
-
-    # Конвертируем CSV перед запуском сервера, если это нужно
-    convert_csv_encoding(input_file, output_file)
-    
     app.run(debug=True)
